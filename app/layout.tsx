@@ -1,17 +1,18 @@
 import { Analytics } from "../components/Analytics";
 import "../styles/globals.css";
 
-export default function RootLayout({
-  children,
-}: {
+type LayoutProps = {
   children: React.ReactNode;
-}) {
-  return (
-    <html lang="en">
-      <body>
-        {children}
-        <Analytics />
-      </body>
-    </html>
-  );
-}
+};
+
+const Layout: React.FC<LayoutProps> = ({ children }) => (
+  <html lang="en">
+    <head></head>
+    <body>
+      {children}
+      <Analytics />
+    </body>
+  </html>
+);
+
+export default Layout;

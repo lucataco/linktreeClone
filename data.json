@@ -1,0 +1,70 @@
+{
+    "name": "Luis C.",
+    "desc": "Hacking away at Machine Learning & AI",
+    "avatar": "https://www.lucataco.com/static/media/avatar.945c391e053ddc5c87b7.jpg",
+    "links": [
+        {
+            "title": "Project - BedtimeStory",
+            "href": "https://bedtimestory.live",
+            "image": "https://bedtimestory.live/_ipx/w_96,q_75/%2F_next%2Fstatic%2Fmedia%2Fbook.b320d3b7.png?url=%2F_next%2Fstatic%2Fmedia%2Fbook.b320d3b7.png&w=96&q=75"
+        },
+        {
+            "title": "Project - ProfilePics.ai",
+            "href": "https://profilepics.ai",
+            "image": "https://profilepics.ai/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogo.cf68a265.png&w=256&q=75"
+        },
+        {
+            "title": "Project - ReadingMood",
+            "href": "https://readingmoods.vercel.app",
+            "image": "https://readingmoods.vercel.app/_next/image?url=%2FreadingMoodLogo2.png&w=640&q=75"
+        },
+        {
+            "title": "Project - Ai Startup Logo Generator",
+            "href": "https://startuplogos.netlify.app",
+            "image": "https://huggingface.co/lucataco/StartupLogos/resolve/main/startupLogo_gallery.png"
+        },
+        {
+            "title": "Project - chatGPT3 Discord Bot",
+            "href": "https://discord.gg/mgVC7Wbe3b",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/ChatGPT_logo.svg/1200px-ChatGPT_logo.svg.png"
+        },
+        {
+            "title": "Project - Text2Img Discord Bot",
+            "href": "https://discord.gg/mgVC7Wbe3b"
+        },
+        {
+            "title": "Machine Learning Projects - Weights & Biases",
+            "href": "https://wandb.ai/lucataco/projects"
+        },
+        {
+            "title": "Catacolabs",
+            "href": "https://catacolabs.com",
+            "image": "https://www.catacolabs.com/cat.png"
+        },
+        {
+            "title": "Huggingface Models",
+            "href": "https://huggingface.co/lucataco",
+            "image": "https://huggingface.co/front/assets/huggingface_logo-noborder.svg"
+        },
+        {
+            "title": "Buy Me A Taco!",
+            "href": "https://buymeacoffee.com/lucataco",
+            "image": "https://em-content.zobj.net/source/skype/289/taco_1f32e.png"
+        }
+
+    ],
+    "socials": [
+        {
+            "title": "Twitter",
+            "href": "https://twitter.com/lucataco93"
+        },
+        {
+            "title": "Github",
+            "href": "https://github.com/lucataco"
+        },
+        {
+            "title": "LinkedIn",
+            "href": "https://www.linkedin.com/in/lucataco/"
+        }
+    ]
+}

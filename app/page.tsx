@@ -1,9 +1,8 @@
-import Image from 'next/image';
-import { get } from '@vercel/edge-config';
-import { redirect } from 'next/navigation';
+import Image from "next/image";
+import data from "../data.json";
 
-export const dynamic = 'force-dynamic',
-  runtime = 'edge';
+export const dynamic = "force-dynamic",
+  runtime = "edge";
 
 function TwitterIcon() {
   return (
@@ -53,6 +52,29 @@ function GitHubIcon() {
   );
 }
 
+function LinkedInIcon() {
+  return (
+    <svg
+      width="30"
+      height="30"
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <g clipPath="url(#clip0_9914_10)">
+        <path
+          d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"
+          fill="currentColor"
+        />
+      </g>
+      <defs>
+        <clipPath id="clip0_9914_10">
+          <rect width="24" height="24" fill="white" />
+        </clipPath>
+      </defs>
+    </svg>
+  );
+}
+
 function LinkCard({
   href,
   title,
@@ -67,17 +89,17 @@ function LinkCard({
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="flex items-center p-1 w-full rounded-md hover:scale-105 transition-all bg-gray-100 mb-3 max-w-3xl"
+      className="flex items-center p-1 w-full rounded-md hover:scale-105 transition-all bg-gray-100 mb-4 max-w-3xl"
     >
       <div className="flex text-center w-full">
-        <div className="w-10 h-10">
+        <div className="w-12 h-12">
           {image && (
             <Image
-              className="rounded-sm"
+              className="rounded-lg"
               alt={title}
               src={image}
-              width={40}
-              height={40}
+              width={48}
+              height={48}
             />
           )}
         </div>
@@ -91,6 +113,7 @@ function LinkCard({
 
 interface Data {
   name: string;
+  desc: string;
   avatar: string;
   links: Link[];
   socials: Social[];
@@ -107,14 +130,7 @@ interface Social {
   title: string;
 }
 
-export default async function HomePage() {
-  const data: Data | undefined = await get('linktree');
-
-  if (!data) {
-    // not working yet https://github.com/vercel/next.js/issues/44232
-    redirect('https://linktr.ee/selenagomez');
-  }
-
+export default function HomePage() {
   return (
     <div className="flex items-center flex-col mx-auto w-full justify-center mt-16 px-8">
       <Image
@@ -125,7 +141,8 @@ export default async function HomePage() {
         width={96}
         height={96}
       />
-      <h1 className="font-bold mt-4 mb-8 text-xl text-white">{data.name}</h1>
+      <h1 className="font-bold mt-4 mb-1 text-xl text-white">{data.name}</h1>
+      <h2 className="mt-1 mb-8 text-lg text-white">{data.desc}</h2>
       {data.links.map((link) => (
         <LinkCard key={link.href} {...link} />
       ))}
@@ -138,10 +155,12 @@ export default async function HomePage() {
             target="_blank"
             rel="noopener noreferrer"
           >
-            {social.href.includes('twitter') ? (
+            {social.href.includes("twitter") ? (
               <TwitterIcon />
-            ) : social.href.includes('github') ? (
+            ) : social.href.includes("github") ? (
               <GitHubIcon />
+            ) : social.href.includes("linked") ? (
+              <LinkedInIcon />
             ) : null}
           </a>
         ))}

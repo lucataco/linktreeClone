@@ -4,7 +4,16 @@ const nextConfig = {
     appDir: true,
   },
   images: {
-    domains: ['pbs.twimg.com'],
+    domains: [
+      "www.lucataco.com",
+      "bedtimestory.live",
+      "profilepics.ai",
+      "readingmoods.vercel.app",
+      "huggingface.co",
+      "www.catacolabs.com",
+      "em-content.zobj.net",
+      "upload.wikimedia.org",
+    ],
   },
 };
 

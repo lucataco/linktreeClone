@@ -13,6 +13,9 @@ const nextConfig = {
       "www.catacolabs.com",
       "em-content.zobj.net",
       "upload.wikimedia.org",
+      "lh6.googleusercontent.com",
+      "www.gitbook.com",
+      "replicate.com",
     ],
   },
 };

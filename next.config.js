@@ -16,7 +16,8 @@ const nextConfig = {
       "lh6.googleusercontent.com",
       "www.gitbook.com",
       "replicate.com",
-      "pbs.twimg.com"
+      "pbs.twimg.com",
+      "youngagain.vercel.app"
     ],
   },
 };

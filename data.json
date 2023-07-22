@@ -39,19 +39,9 @@
       "image": "https://replicate.com/static/home/stable-diffusion.8b623bed1816.jpg"
     },
     {
-      "title": "Weights & Biases",
-      "href": "https://wandb.ai/lucataco/projects",
-      "image": "https://lh6.googleusercontent.com/-GoiAJv-giXI/AAAAAAAAAAI/AAAAAAAAAAA/f9fX8M7YZ1Y/s44-p-k-no-ns-nd/photo.jpg"
-    },
-    {
       "title": "Catacolabs.com",
       "href": "https://catacolabs.com",
       "image": "https://www.catacolabs.com/cat.png"
-    },
-    {
-      "title": "Banana Starter Templates",
-      "href": "https://github.com/lucataco",
-      "image": "https://www.gitbook.com/cdn-cgi/image/width=40,dpr=2,height=40,fit=contain,format=auto/https%3A%2F%2F746801484-files.gitbook.io%2F~%2Ffiles%2Fv0%2Fb%2Fgitbook-x-prod.appspot.com%2Fo%2Fspaces%252FskHzBjqppMJCb6UmofVi%252Ficon%252FqfCWTuIEk2sy2r6kc4xh%252Fbanana-icon-square.png%3Falt%3Dmedia%26token%3D8c0194b1-b00f-4c1c-ab7c-fe79abd02d5a"
     },
     {
       "title": "Replicate Models",
@@ -59,9 +49,19 @@
       "image": "https://pbs.twimg.com/profile_images/1627906750660878337/-VW-g-bU_400x400.jpg"
     },
     {
+      "title": "Banana Templates",
+      "href": "https://github.com/lucataco?tab=repositories&q=banana",
+      "image": "https://www.gitbook.com/cdn-cgi/image/width=40,dpr=2,height=40,fit=contain,format=auto/https%3A%2F%2F746801484-files.gitbook.io%2F~%2Ffiles%2Fv0%2Fb%2Fgitbook-x-prod.appspot.com%2Fo%2Fspaces%252FskHzBjqppMJCb6UmofVi%252Ficon%252FqfCWTuIEk2sy2r6kc4xh%252Fbanana-icon-square.png%3Falt%3Dmedia%26token%3D8c0194b1-b00f-4c1c-ab7c-fe79abd02d5a"
+    },
+    {
       "title": "Huggingface Models",
       "href": "https://huggingface.co/lucataco",
       "image": "https://huggingface.co/front/assets/huggingface_logo-noborder.svg"
+    },
+    {
+      "title": "Weights & Biases",
+      "href": "https://wandb.ai/lucataco/projects",
+      "image": "https://lh6.googleusercontent.com/-GoiAJv-giXI/AAAAAAAAAAI/AAAAAAAAAAA/f9fX8M7YZ1Y/s44-p-k-no-ns-nd/photo.jpg"
     },
     {
       "title": "Buy Me A Taco!",

@@ -11,6 +11,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => (
     <body>
       {children}
       <Analytics />
+      <script defer data-domain="lucataco.dev" src="https://data.lucata.co/js/script.js"></script>
     </body>
   </html>
 );

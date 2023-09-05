@@ -7,7 +7,7 @@ const nextConfig = {
     domains: [
       "www.lucataco.com",
       "bedtimestory.live",
-      "profilepics.ai",
+      "proheadshot.pics",
       "readingmoods.vercel.app",
       "huggingface.co",
       "www.catacolabs.com",

@@ -6,67 +6,67 @@
     {
       "title": "proHeadshot.pics",
       "href": "https://proheadshot.pics",
-      "image": "https://proheadshot.pics/_next/image?url=%2Flogo.png&w=48&q=75"
+      "image": "/headshotpics.jpg"
     },
     {
       "title": "BedtimeStory.live",
       "href": "https://bedtimestory.live",
-      "image": "https://bedtimestory.live/_ipx/w_96,q_75/%2F_next%2Fstatic%2Fmedia%2Fbook.b320d3b7.png?url=%2F_next%2Fstatic%2Fmedia%2Fbook.b320d3b7.png&w=96&q=75"
+      "image": "/bedtimestory.png"
     },
     {
       "title": "YoungAgain.app",
       "href": "https://youngagain.vercel.app/",
-      "image": "https://youngagain.vercel.app/_next/image?url=%2FimageIcon.png&w=48&q=75"
+      "image": "/youngagain.jpg"
     },
     {
       "title": "ReadingMoods",
       "href": "https://readingmoods.vercel.app",
-      "image": "https://readingmoods.vercel.app/_next/image?url=%2FreadingMoodLogo2.png&w=640&q=75"
+      "image": "/readingmoods.jpg"
     },
     {
       "title": "Ai Startup Logo Generator",
       "href": "https://startuplogos.netlify.app",
-      "image": "https://huggingface.co/lucataco/StartupLogos/resolve/main/startupLogo_gallery.png"
+      "image": "/startupLogos.png"
     },
     {
       "title": "chatGPT3 Discord Bot",
       "href": "https://discord.gg/mgVC7Wbe3b",
-      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/ChatGPT_logo.svg/1200px-ChatGPT_logo.svg.png"
+      "image": "/chatgpt.png"
     },
     {
       "title": "Text2Img Discord Bot",
       "href": "https://discord.gg/mgVC7Wbe3b",
-      "image": "https://replicate.com/static/home/stable-diffusion.8b623bed1816.jpg"
+      "image": "/sd.jpg"
     },
     {
       "title": "Catacolabs.com",
       "href": "https://catacolabs.com",
-      "image": "https://www.catacolabs.com/cat.png"
+      "image": "/cat.png"
     },
     {
       "title": "Replicate Models",
       "href": "https://replicate.com/lucataco",
-      "image": "https://replicate.com/static/favicon.e390e65c9599.png"
+      "image": "/replicate.png"
     },
     {
       "title": "Banana Templates",
       "href": "https://github.com/lucataco?tab=repositories&q=banana",
-      "image": "https://www.gitbook.com/cdn-cgi/image/width=40,dpr=2,height=40,fit=contain,format=auto/https%3A%2F%2F746801484-files.gitbook.io%2F~%2Ffiles%2Fv0%2Fb%2Fgitbook-x-prod.appspot.com%2Fo%2Fspaces%252FskHzBjqppMJCb6UmofVi%252Ficon%252FqfCWTuIEk2sy2r6kc4xh%252Fbanana-icon-square.png%3Falt%3Dmedia%26token%3D8c0194b1-b00f-4c1c-ab7c-fe79abd02d5a"
+      "image": "/banana.png"
     },
     {
       "title": "Huggingface Models",
       "href": "https://huggingface.co/lucataco",
-      "image": "https://huggingface.co/front/assets/huggingface_logo-noborder.svg"
+      "image": "/hf.png"
     },
     {
       "title": "Weights & Biases",
       "href": "https://wandb.ai/lucataco/projects",
-      "image": "https://lh6.googleusercontent.com/-GoiAJv-giXI/AAAAAAAAAAI/AAAAAAAAAAA/f9fX8M7YZ1Y/s44-p-k-no-ns-nd/photo.jpg"
+      "image": "/wb.png"
     },
     {
       "title": "Buy Me A Taco!",
       "href": "https://buymeacoffee.com/lucataco",
-      "image": "https://em-content.zobj.net/source/skype/289/taco_1f32e.png"
+      "image": "/taco.png"
     }
   ],
   "socials": [

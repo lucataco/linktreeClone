@@ -29,6 +29,11 @@
       "image": "/startupLogos.png"
     },
     {
+      "title": "ToolBot",
+      "href": "https://toolbot.netlify.app/",
+      "image": "/toolbot.png"
+    },
+    {
       "title": "chatGPT3 Discord Bot",
       "href": "https://discord.gg/mgVC7Wbe3b",
       "image": "/chatgpt.png"

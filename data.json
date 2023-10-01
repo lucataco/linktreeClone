@@ -4,6 +4,11 @@
   "avatar": "https://www.lucataco.com/static/media/avatar.945c391e053ddc5c87b7.jpg",
   "links": [
     {
+      "title": "cartoonPet.pics",
+      "href": "https://cartoonPet.pics",
+      "image": "/cartoonpics.png"
+    },
+    {
       "title": "proHeadshot.pics",
       "href": "https://proheadshot.pics",
       "image": "/headshotpics.jpg"

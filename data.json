@@ -74,6 +74,11 @@
       "image": "/wb.png"
     },
     {
+      "title": "Sponsor my Open Source Work",
+      "href": "https://github.com/sponsors/lucataco/",
+      "image": "/github.png"
+    },
+    {
       "title": "Buy Me A Taco!",
       "href": "https://buymeacoffee.com/lucataco",
       "image": "/taco.png"

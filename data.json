@@ -4,6 +4,16 @@
   "avatar": "https://www.lucataco.com/static/media/avatar.945c391e053ddc5c87b7.jpg",
   "links": [
     {
+      "title": "Replicate Models",
+      "href": "https://replicate.com/lucataco",
+      "image": "/replicate.png"
+    },
+    {
+      "title": "Buy Me A Taco!",
+      "href": "https://buymeacoffee.com/lucataco",
+      "image": "/taco.png"
+    },
+    {
       "title": "cartoonPet.pics",
       "href": "https://cartoonPet.pics",
       "image": "/cartoonpics.png"
@@ -54,11 +64,6 @@
       "image": "/cat.png"
     },
     {
-      "title": "Replicate Models",
-      "href": "https://replicate.com/lucataco",
-      "image": "/replicate.png"
-    },
-    {
       "title": "Banana Templates",
       "href": "https://github.com/lucataco?tab=repositories&q=banana",
       "image": "/banana.png"
@@ -77,11 +82,6 @@
       "title": "Sponsor my Open Source Work",
       "href": "https://github.com/sponsors/lucataco/",
       "image": "/github.png"
-    },
-    {
-      "title": "Buy Me A Taco!",
-      "href": "https://buymeacoffee.com/lucataco",
-      "image": "/taco.png"
     }
   ],
   "socials": [

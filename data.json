@@ -9,79 +9,73 @@
       "image": "/replicate.png"
     },
     {
-      "title": "Buy Me A Taco!",
+      "title": "Buy Me A Taco",
       "href": "https://buymeacoffee.com/lucataco",
       "image": "/taco.png"
     },
     {
+      "title": "GitHub Sponsors",
+      "href": "https://github.com/sponsors/lucataco/",
+      "image": "/github.png"
+    },
+    {
       "title": "cartoonPet.pics",
       "href": "https://cartoonPet.pics",
-      "image": "/cartoonpics.png"
+      "image": "/cartoonpics.png",
+      "discontinued": true
     },
     {
       "title": "proHeadshot.pics",
       "href": "https://proheadshot.pics",
-      "image": "/headshotpics.jpg"
+      "image": "/headshotpics.jpg",
+      "discontinued": true
     },
     {
       "title": "BedtimeStory.live",
       "href": "https://bedtimestorylive.netlify.app/",
-      "image": "/bedtimestory.png"
+      "image": "/bedtimestory.png",
+      "discontinued": true
     },
     {
       "title": "YoungAgain.app",
       "href": "https://youngagain.vercel.app/",
-      "image": "/youngagain.jpg"
+      "image": "/youngagain.jpg",
+      "discontinued": true
     },
     {
       "title": "ReadingMoods",
       "href": "https://readingmoods.vercel.app",
-      "image": "/readingmoods.jpg"
+      "image": "/readingmoods.jpg",
+      "discontinued": true
     },
     {
-      "title": "Ai Startup Logo Generator",
+      "title": "Startup Logo Generator",
       "href": "https://startuplogos.netlify.app",
-      "image": "/startupLogos.png"
+      "image": "/startupLogos.png",
+      "discontinued": true
+    },
+    {
+      "title": "profilepics.ai",
+      "href": "https://profilepics.ai",
+      "image": "/headshotpics.jpg",
+      "acquired": true
+    },
+    {
+      "title": "Banana Templates",
+      "href": "https://github.com/lucataco?tab=repositories&q=banana",
+      "image": "/banana.png",
+      "discontinued": true
     },
     {
       "title": "ToolBot",
       "href": "https://toolbot.netlify.app/",
-      "image": "/toolbot.png"
-    },
-    {
-      "title": "chatGPT3 Discord Bot",
-      "href": "https://discord.gg/mgVC7Wbe3b",
-      "image": "/chatgpt.png"
-    },
-    {
-      "title": "Text2Img Discord Bot",
-      "href": "https://discord.gg/mgVC7Wbe3b",
-      "image": "/sd.jpg"
+      "image": "/toolbot.png",
+      "discontinued": true
     },
     {
       "title": "Catacolabs.com",
       "href": "https://catacolabs.com",
       "image": "/cat.png"
-    },
-    {
-      "title": "Banana Templates",
-      "href": "https://github.com/lucataco?tab=repositories&q=banana",
-      "image": "/banana.png"
-    },
-    {
-      "title": "Huggingface Models",
-      "href": "https://huggingface.co/lucataco",
-      "image": "/hf.png"
-    },
-    {
-      "title": "Weights & Biases",
-      "href": "https://wandb.ai/lucataco/projects",
-      "image": "/wb.png"
-    },
-    {
-      "title": "Sponsor my Open Source Work",
-      "href": "https://github.com/sponsors/lucataco/",
-      "image": "/github.png"
     }
   ],
   "socials": [
@@ -96,6 +90,14 @@
     {
       "title": "LinkedIn",
       "href": "https://www.linkedin.com/in/lucataco/"
+    },
+    {
+      "title": "Huggingface",
+      "href": "https://huggingface.co/lucataco"
+    },
+    {
+      "title": "Weights & Biases",
+      "href": "https://wandb.ai/lucataco"
     }
   ]
 }

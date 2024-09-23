@@ -20,13 +20,13 @@
     },
     {
       "title": "cartoonPet.pics",
-      "href": "https://cartoonPet.pics",
+      "href": "https://cartoonpet.up.railway.app",
       "image": "/cartoonpics.png",
       "discontinued": true
     },
     {
       "title": "proHeadshot.pics",
-      "href": "https://proheadshot.pics",
+      "href": "proheadshot.up.railway.app",
       "image": "/headshotpics.jpg",
       "discontinued": true
     },

@@ -4,7 +4,6 @@ import data from "../data.json";
 export const dynamic = "force-dynamic",
   runtime = "edge";
 
-
 // https://simpleicons.org/
 function TwitterIcon() {
   return (
@@ -142,34 +141,36 @@ function LinkCard({
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="flex items-center p-1 w-full rounded-md hover:scale-105 transition-all bg-gray-100 mb-4 max-w-2xl"
+      className="relative flex items-center p-1 w-full rounded-md hover:scale-105 transition-all bg-gray-100 mb-4 max-w-2xl"
     >
-      <div className="flex text-center w-full">
-        <div className="w-12 h-12">
-          {image && (
-            <Image
-              className="rounded-lg"
-              alt={title}
-              src={image}
-              width={48}
-              height={48}
-            />
-          )}
-        </div>
-        <div className={`flex justify-center items-center w-full ${discontinued || acquired ? "-mr-12" : "-ml-12"}`}>
-          <h2 className="font-semibold text-gray-700">
-            {title}
-          </h2>
-        </div>
+      <div className="w-12 h-12 flex-shrink-0 ml-1">
+        {image && (
+          <Image
+            className="rounded-lg"
+            alt={title}
+            src={image}
+            width={48}
+            height={48}
+          />
+        )}
       </div>
-      {discontinued && (
-        <div className="bg-red-400 text-gray-700 text-md rounded-full px-2">
-          Discontinued
-        </div>
-      )}
-      {acquired && (
-        <div className="bg-blue-400 text-gray-700 text-md rounded-full px-6">
-          Acquired
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <h2 className="font-semibold text-gray-700">
+          {title}
+        </h2>
+      </div>
+      {(discontinued || acquired) && (
+        <div className="ml-auto mr-1 flex-shrink-0 z-10 pointer-events-auto flex items-center">
+          {discontinued && (
+            <div className="bg-red-400 text-gray-700 text-md rounded-full px-2 whitespace-nowrap">
+              Discontinued
+            </div>
+          )}
+          {acquired && (
+            <div className="bg-blue-400 text-gray-700 text-md rounded-full px-6 whitespace-nowrap">
+              Acquired
+            </div>
+          )}
         </div>
       )}
     </a>
@@ -235,7 +236,7 @@ export default function HomePage() {
           </a>
         ))}
       </div>
-      <div className="flex items-center mt-12 footer"></div>
+      <div className="mt-12 mb-6 text-white text-sm text-center">&copy; 2025 <a href="https://catacolabs.com" target="_blank" rel="noopener noreferrer" className="underline">CatacoLabs</a></div>
     </div>
   );
 }

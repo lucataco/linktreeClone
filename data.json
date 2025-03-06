@@ -1,12 +1,12 @@
 {
   "name": "Luis C.",
   "desc": "Hacking away at Machine Learning & AI",
-  "avatar": "https://www.lucataco.com/static/media/avatar.945c391e053ddc5c87b7.jpg",
+  "avatar": "/lucataco-avatar.jpg",
   "links": [
     {
       "title": "Replicate Models",
       "href": "https://replicate.com/lucataco",
-      "image": "/replicate.png"
+      "image": "/replicate.jpeg"
     },
     {
       "title": "Buy Me A Taco",
@@ -17,6 +17,16 @@
       "title": "GitHub Sponsors",
       "href": "https://github.com/sponsors/lucataco/",
       "image": "/github.png"
+    },
+    {
+      "title": "Portfolio Page",
+      "href": "https://lucataco.com",
+      "image": "/lucataco-avatar.jpg"
+    },
+    {
+      "title": "Catacolabs",
+      "href": "https://catacolabs.com",
+      "image": "/cat.png"
     },
     {
       "title": "cartoonPet.pics",
@@ -71,11 +81,6 @@
       "href": "https://toolbot.netlify.app/",
       "image": "/toolbot.png",
       "discontinued": true
-    },
-    {
-      "title": "Catacolabs.com",
-      "href": "https://catacolabs.com",
-      "image": "/cat.png"
     }
   ],
   "socials": [

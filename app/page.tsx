@@ -147,10 +147,12 @@ function LinkCard({
         {image && (
           <Image
             className="rounded-lg"
-            alt={title}
+            alt=""
             src={image}
             width={48}
             height={48}
+            aria-hidden={true}
+            role="presentation"
           />
         )}
       </div>
@@ -203,7 +205,7 @@ export default function HomePage() {
       <Image
         priority
         className="rounded-full"
-        alt={data.name}
+        alt={`Portrait of ${data.name}`}
         src={data.avatar}
         width={96}
         height={96}

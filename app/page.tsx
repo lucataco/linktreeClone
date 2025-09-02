@@ -164,12 +164,12 @@ function LinkCard({
       {(discontinued || acquired) && (
         <div className="ml-auto mr-1 flex-shrink-0 z-10 pointer-events-auto flex items-center">
           {discontinued && (
-            <div className="bg-red-400 text-gray-700 text-md rounded-full px-2 whitespace-nowrap">
+            <div className="bg-red-500/85 text-white text-md rounded-full px-2 whitespace-nowrap shadow-sm ring-1 ring-red-700/20">
               Discontinued
             </div>
           )}
           {acquired && (
-            <div className="bg-blue-400 text-gray-700 text-md rounded-full px-6 whitespace-nowrap">
+            <div className="bg-emerald-500/85 text-white text-md rounded-full px-6 whitespace-nowrap shadow-sm ring-1 ring-emerald-700/20">
               Acquired
             </div>
           )}

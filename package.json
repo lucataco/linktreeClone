@@ -20,5 +20,18 @@
     "@types/node": "20.4.4",
     "@types/react": "18.2.15",
     "typescript": "5.1.6"
+  },
+  "browserslist": {
+    "production": [
+      ">0.3% and not dead and not op_mini all",
+      "not IE 11",
+      "not IE_Mob 11",
+      "maintained node versions"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }

@@ -1,8 +1,7 @@
-import Image from "next/image";
+// Using native <img> to minimize client-side JS payload
 import data from "../data.json";
 
-export const dynamic = "force-dynamic",
-  runtime = "edge";
+// Allow static optimization for minimal JS
 
 // https://simpleicons.org/
 function TwitterIcon() {
@@ -145,12 +144,14 @@ function LinkCard({
     >
       <div className="w-12 h-12 flex-shrink-0 ml-1">
         {image && (
-          <Image
+          <img
             className="rounded-lg"
             alt=""
             src={image}
             width={48}
             height={48}
+            loading="lazy"
+            decoding="async"
             aria-hidden={true}
             role="presentation"
           />
@@ -164,12 +165,12 @@ function LinkCard({
       {(discontinued || acquired) && (
         <div className="ml-auto mr-1 flex-shrink-0 z-10 pointer-events-auto flex items-center">
           {discontinued && (
-            <div className="bg-red-500/85 text-white text-md rounded-full px-2 whitespace-nowrap shadow-sm ring-1 ring-red-700/20">
+            <div className="bg-red-700 text-white text-md rounded-full px-2 whitespace-nowrap shadow-sm ring-1 ring-red-900/20">
               Discontinued
             </div>
           )}
           {acquired && (
-            <div className="bg-emerald-500/85 text-white text-md rounded-full px-6 whitespace-nowrap shadow-sm ring-1 ring-emerald-700/20">
+            <div className="bg-emerald-700 text-white text-md rounded-full px-6 whitespace-nowrap shadow-sm ring-1 ring-emerald-900/20">
               Acquired
             </div>
           )}
@@ -202,13 +203,15 @@ interface Social {
 export default function HomePage() {
   return (
     <div className="flex items-center flex-col mx-auto w-full justify-center mt-16 px-8">
-      <Image
-        priority
+      <img
         className="rounded-full"
         alt={`Portrait of ${data.name}`}
         src={data.avatar}
         width={96}
         height={96}
+        loading="eager"
+        decoding="async"
+        fetchPriority="high"
       />
       <h1 className="font-bold mt-4 mb-1 text-xl text-white">{data.name}</h1>
       <h2 className="mb-8 text-base text-white">{data.desc}</h2>

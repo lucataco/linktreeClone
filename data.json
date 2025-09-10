@@ -81,6 +81,21 @@
       "href": "https://toolbot.netlify.app/",
       "image": "/toolbot.png",
       "discontinued": true
+    },
+    {
+      "title": "Warp Terminal referral",
+      "href": "https://app.warp.dev/referral/DX4GR9",
+      "image": "/warp.png"
+    },
+    {
+      "title": "Capital One Venture X Referral",
+      "href": "https://i.capitalone.com/J4yIh4Sn5",
+      "image": "/capitalone.png"
+    },
+    {
+      "title": "Discover it Cash Back Referral",
+      "href": "https://refer.discover.com/dannycatacora!cd9151fa7e!a",
+      "image": "/discover.png"
     }
   ],
   "socials": [

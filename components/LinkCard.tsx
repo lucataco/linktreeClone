@@ -54,13 +54,13 @@ export default function LinkCard({
           />
         )}
       </div>
-      <div className="flex-1 flex items-center justify-center px-4">
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
         <h2 className="font-semibold text-gray-700 text-center leading-tight">
           {title}
         </h2>
       </div>
       {(discontinued || acquired) && (
-        <div className="flex-shrink-0 flex items-center">
+        <div className="ml-auto flex-shrink-0 flex items-center z-10">
           {discontinued && (
             <div className="bg-red-700 text-white text-sm rounded-full px-3 py-1 whitespace-nowrap shadow-sm">
               Discontinued

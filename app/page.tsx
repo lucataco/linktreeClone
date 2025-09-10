@@ -140,7 +140,8 @@ function LinkCard({
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="relative flex items-center p-1 w-full rounded-md hover:scale-105 transition-all bg-gray-100 mb-4 max-w-2xl"
+      aria-label={title}
+      className="relative flex items-center p-1 w-full rounded-md hover:scale-105 transition-all bg-gray-100 mb-4 max-w-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
     >
       <div className="w-12 h-12 flex-shrink-0 ml-1">
         {image && (
@@ -215,9 +216,15 @@ export default function HomePage() {
       />
       <h1 className="font-bold mt-4 mb-1 text-xl text-white">{data.name}</h1>
       <h2 className="mb-8 text-base text-white">{data.desc}</h2>
-      {data.links.map((link) => (
-        <LinkCard key={link.href} {...link} />
-      ))}
+      <nav aria-label="Links" className="w-full flex flex-col items-center">
+        <ul role="list" className="w-full flex flex-col items-center">
+          {data.links.map((link) => (
+            <li key={link.href} className="w-full flex justify-center">
+              <LinkCard {...link} />
+            </li>
+          ))}
+        </ul>
+      </nav>
       <div className="flex items-center gap-4 my-2 text-white">
         {data.socials.map((social) => (
           <a

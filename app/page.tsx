@@ -1,4 +1,4 @@
-// Using native <img> to minimize client-side JS payload
+import Image from "next/image";
 import data from "../data.json";
 
 // Allow static optimization for minimal JS
@@ -120,13 +120,15 @@ function LinkCard({
   title,
   image,
   discontinued,
-  acquired
+  acquired,
+  priority = false
 }: {
   href: string;
   title: string;
   image?: string;
   discontinued?: boolean;
   acquired?: boolean;
+  priority?: boolean;
 }) {
   return (
     <a
@@ -138,14 +140,14 @@ function LinkCard({
     >
       <div className="w-12 h-12 flex-shrink-0 ml-1">
         {image && (
-          <img
+          <Image
             className="rounded-lg"
             alt=""
             src={image}
             width={48}
             height={48}
-            loading="lazy"
-            decoding="async"
+            priority={priority}
+            sizes="48px"
             aria-hidden={true}
             role="presentation"
           />
@@ -197,23 +199,22 @@ interface Social {
 export default function HomePage() {
   return (
     <div className="flex items-center flex-col mx-auto w-full justify-center mt-16 px-8">
-      <img
+      <Image
         className="rounded-full"
         alt={`Portrait of ${data.name}`}
         src={data.avatar}
         width={96}
         height={96}
-        loading="eager"
-        decoding="async"
-        fetchPriority="high"
+        priority
+        sizes="96px"
       />
       <h1 className="font-bold mt-4 mb-1 text-xl text-white">{data.name}</h1>
       <h2 className="mb-8 text-base text-white">{data.desc}</h2>
       <nav aria-label="Links" className="w-full flex flex-col items-center">
         <ul role="list" className="w-full flex flex-col items-center">
-          {data.links.map((link) => (
+          {data.links.map((link, index) => (
             <li key={link.href} className="w-full flex justify-center">
-              <LinkCard {...link} />
+              <LinkCard {...link} priority={index < 3} />
             </li>
           ))}
         </ul>

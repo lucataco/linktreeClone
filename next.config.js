@@ -4,6 +4,8 @@ const nextConfig = {
     optimizeCss: true,
   },
   images: {
+    formats: ['image/webp', 'image/avif'],
+    minimumCacheTTL: 31536000, // 1 year cache
     domains: [
       "www.lucataco.com",
       "bedtimestory.live",

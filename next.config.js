@@ -2,10 +2,19 @@
 const nextConfig = {
   experimental: {
     optimizeCss: true,
+    optimizePackageImports: ['react', 'react-dom'],
   },
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production',
+  },
+  poweredByHeader: false,
+  reactStrictMode: true,
+  swcMinify: true,
   images: {
     formats: ['image/webp', 'image/avif'],
     minimumCacheTTL: 31536000, // 1 year cache
+    dangerouslyAllowSVG: true,
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
     domains: [
       "www.lucataco.com",
       "bedtimestory.live",

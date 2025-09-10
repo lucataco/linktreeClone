@@ -2,9 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  height: 100vh;
-  background-image: linear-gradient(
+:root {
+  --gradient: linear-gradient(
     45deg,
     hsl(212deg 100% 7%) 0%,
     hsl(212deg 97% 8%) 9%,
@@ -19,7 +18,70 @@ body {
     hsl(277deg 66% 31%) 91%,
     hsl(292deg 100% 27%) 100%
   );
+}
+
+* {
+  /* Better mobile scrolling */
+  -webkit-overflow-scrolling: touch;
+}
+
+body {
+  min-height: 100vh;
+  background: var(--gradient);
   background-position: center;
   background-repeat: no-repeat;
   background-attachment: fixed;
+  /* Improve text rendering on mobile */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* Better touch targets */
+  touch-action: manipulation;
+}
+
+/* Mobile-optimized focus styles */
+@media (max-width: 768px) {
+  body {
+    /* Fixed background can cause performance issues on mobile */
+    background-attachment: scroll;
+  }
+}
+
+@layer components {
+  .link-card {
+    @apply transition-all duration-200 ease-out;
+    /* Better touch feedback */
+    transform-origin: center;
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  .link-card:active {
+    @apply scale-95 bg-gray-200;
+    transition-duration: 100ms;
+  }
+  
+  /* Only apply hover effects on devices that support hover */
+  @media (hover: hover) and (pointer: fine) {
+    .link-card:hover {
+      @apply scale-105;
+    }
+    
+    .link-card:hover:active {
+      @apply scale-95;
+    }
+  }
+  
+  .social-icon {
+    @apply transition-all duration-200;
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  .social-icon:active {
+    @apply scale-90 opacity-70;
+  }
+  
+  @media (hover: hover) and (pointer: fine) {
+    .social-icon:hover {
+      @apply scale-110 opacity-80;
+    }
+  }
 }

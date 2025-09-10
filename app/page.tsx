@@ -1,5 +1,6 @@
 import Image from "next/image";
 import data from "../data.json";
+import LinkCard from "../components/LinkCard";
 
 // Allow static optimization for minimal JS
 
@@ -115,118 +116,46 @@ function WeightsAndBiasesIcon() {
   );
 }
 
-function LinkCard({
-  href,
-  title,
-  image,
-  discontinued,
-  acquired,
-  priority = false
-}: {
-  href: string;
-  title: string;
-  image?: string;
-  discontinued?: boolean;
-  acquired?: boolean;
-  priority?: boolean;
-}) {
-  return (
-    <a
-      href={href}
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label={title}
-      className="relative flex items-center p-1 w-full rounded-md hover:scale-105 transition-all bg-gray-100 mb-4 max-w-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
-    >
-      <div className="w-12 h-12 flex-shrink-0 ml-1">
-        {image && (
-          <Image
-            className="rounded-lg"
-            alt=""
-            src={image}
-            width={48}
-            height={48}
-            priority={priority}
-            sizes="48px"
-            aria-hidden={true}
-            role="presentation"
-          />
-        )}
-      </div>
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        <h2 className="font-semibold text-gray-700">
-          {title}
-        </h2>
-      </div>
-      {(discontinued || acquired) && (
-        <div className="ml-auto mr-1 flex-shrink-0 z-10 pointer-events-auto flex items-center">
-          {discontinued && (
-            <div className="bg-red-700 text-white text-md rounded-full px-2 whitespace-nowrap shadow-sm ring-1 ring-red-900/20">
-              Discontinued
-            </div>
-          )}
-          {acquired && (
-            <div className="bg-emerald-700 text-white text-md rounded-full px-6 whitespace-nowrap shadow-sm ring-1 ring-emerald-900/20">
-              Acquired
-            </div>
-          )}
-        </div>
-      )}
-    </a>
-  );
-}
 
-interface Data {
-  name: string;
-  desc: string;
-  avatar: string;
-  links: Link[];
-  socials: Social[];
-}
-
-interface Link {
-  href: string;
-  title: string;
-  image?: string;
-  discontinued?: boolean;
-}
-
-interface Social {
-  href: string;
-  title: string;
-}
 
 export default function HomePage() {
   return (
-    <div className="flex items-center flex-col mx-auto w-full justify-center mt-16 px-8">
-      <Image
-        className="rounded-full"
-        alt={`Portrait of ${data.name}`}
-        src={data.avatar}
-        width={96}
-        height={96}
-        priority
-        sizes="96px"
-      />
-      <h1 className="font-bold mt-4 mb-1 text-xl text-white">{data.name}</h1>
-      <h2 className="mb-8 text-base text-white">{data.desc}</h2>
-      <nav aria-label="Links" className="w-full flex flex-col items-center">
-        <ul role="list" className="w-full flex flex-col items-center">
+    <div className="flex items-center flex-col mx-auto w-full justify-center py-8 px-4 sm:px-8 min-h-screen">
+      {/* Profile Section */}
+      <div className="flex flex-col items-center mb-8">
+        <Image
+          className="rounded-full shadow-lg"
+          alt={`Portrait of ${data.name}`}
+          src={data.avatar}
+          width={96}
+          height={96}
+          priority
+          sizes="(max-width: 640px) 80px, 96px"
+        />
+        <h1 className="font-bold mt-4 mb-2 text-xl sm:text-2xl text-white text-center">{data.name}</h1>
+        <h2 className="mb-2 text-base sm:text-lg text-white/90 text-center max-w-md">{data.desc}</h2>
+      </div>
+      {/* Links Section */}
+      <nav aria-label="Links" className="w-full flex flex-col items-center flex-1">
+        <ul role="list" className="w-full flex flex-col items-center gap-2 max-w-2xl">
           {data.links.map((link, index) => (
-            <li key={link.href} className="w-full flex justify-center">
+            <li key={link.href} className="w-full">
               <LinkCard {...link} priority={index < 3} />
             </li>
           ))}
         </ul>
       </nav>
-      <div className="flex items-center gap-4 my-2 text-white">
+      
+      {/* Social Links */}
+      <div className="flex items-center justify-center gap-6 my-8 text-white">
         {data.socials.map((social) => (
           <a
-            aria-label={`${social.title} link`}
+            aria-label={`Visit ${social.title} profile`}
             key={social.href}
             href={social.href}
             target="_blank"
             rel="noopener noreferrer"
+            className="social-icon p-2 rounded-full hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
           >
             {social.href.includes("twitter") ? (
               <TwitterIcon />
@@ -242,7 +171,20 @@ export default function HomePage() {
           </a>
         ))}
       </div>
-      <div className="mt-12 mb-6 text-white text-sm text-center">&copy; 2025 <a href="https://catacolabs.com" target="_blank" rel="noopener noreferrer" className="underline">CatacoLabs</a></div>
+      
+      {/* Footer */}
+      <footer className="mt-auto pt-8">
+        <div className="text-white/70 text-sm text-center">
+          &copy; 2025 <a 
+            href="https://catacolabs.com" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="underline hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 rounded"
+          >
+            CatacoLabs
+          </a>
+        </div>
+      </footer>
     </div>
   );
 }

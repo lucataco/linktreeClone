@@ -175,7 +175,7 @@ export default function HomePage() {
       {/* Footer */}
       <footer className="mt-auto pt-8">
         <div className="text-white/70 text-sm text-center">
-          &copy; 2025 <a 
+          &copy; 2026 <a 
             href="https://catacolabs.com" 
             target="_blank" 
             rel="noopener noreferrer" 

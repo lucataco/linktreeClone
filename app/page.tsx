@@ -120,9 +120,9 @@ function WeightsAndBiasesIcon() {
 
 export default function HomePage() {
   return (
-    <div className="flex items-center flex-col mx-auto w-full justify-center py-8 px-4 sm:px-8 min-h-screen">
-      {/* Profile Section */}
-      <div className="flex flex-col items-center mb-8">
+    <main className="flex items-center flex-col mx-auto w-full justify-center py-8 px-4 sm:px-8 min-h-screen">
+      {/* Profile Section - semantic header with microdata */}
+      <header className="flex flex-col items-center mb-8" itemScope itemType="https://schema.org/Person">
         <Image
           className="rounded-full shadow-lg"
           alt={`Portrait of ${data.name}`}
@@ -131,10 +131,12 @@ export default function HomePage() {
           height={96}
           priority
           sizes="(max-width: 640px) 80px, 96px"
+          itemProp="image"
         />
-        <h1 className="font-bold mt-4 mb-2 text-xl sm:text-2xl text-white text-center">{data.name}</h1>
-        <h2 className="mb-2 text-base sm:text-lg text-white/90 text-center max-w-md">{data.desc}</h2>
-      </div>
+        <h1 className="font-bold mt-4 mb-2 text-xl sm:text-2xl text-white text-center" itemProp="name">{data.name}</h1>
+        <p className="mb-2 text-base sm:text-lg text-white/90 text-center max-w-md" itemProp="description">{data.desc}</p>
+        <meta itemProp="jobTitle" content="Machine Learning Engineer" />
+      </header>
       {/* Links Section */}
       <nav aria-label="Links" className="w-full flex flex-col items-center flex-1">
         <ul role="list" className="w-full flex flex-col items-center gap-2 max-w-2xl">
@@ -146,18 +148,18 @@ export default function HomePage() {
         </ul>
       </nav>
       
-      {/* Social Links */}
-      <div className="flex items-center justify-center gap-6 my-8 text-white">
+      {/* Social Links - semantic section with sameAs microdata */}
+      <section aria-label="Social profiles" className="flex items-center justify-center gap-6 my-8 text-white">
         {data.socials.map((social) => (
           <a
             aria-label={`Visit ${social.title} profile`}
             key={social.href}
             href={social.href}
             target="_blank"
-            rel="noopener noreferrer"
+            rel="noopener noreferrer me"
             className="social-icon p-2 rounded-full hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
           >
-            {social.href.includes("twitter") ? (
+            {social.href.includes("twitter") || social.href.includes("x.com") ? (
               <TwitterIcon />
             ) : social.href.includes("github") ? (
               <GitHubIcon />
@@ -170,21 +172,21 @@ export default function HomePage() {
             ) : null}
           </a>
         ))}
-      </div>
-      
+      </section>
+
       {/* Footer */}
       <footer className="mt-auto pt-8">
-        <div className="text-white/70 text-sm text-center">
-          &copy; 2026 <a 
-            href="https://catacolabs.com" 
-            target="_blank" 
-            rel="noopener noreferrer" 
+        <p className="text-white/70 text-sm text-center">
+          &copy; 2026 <a
+            href="https://catacolabs.com"
+            target="_blank"
+            rel="noopener noreferrer"
             className="underline hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 rounded"
           >
             CatacoLabs
           </a>
-        </div>
+        </p>
       </footer>
-    </div>
+    </main>
   );
 }

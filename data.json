@@ -1,7 +1,7 @@
 {
   "name": "Luis C.",
   "desc": "Hacking away at Machine Learning & AI",
-  "avatar": "/lucataco-avatar.jpg",
+  "avatar": "/lucataco-avatar.png",
   "links": [
     {
       "title": "Replicate Models",
@@ -21,7 +21,7 @@
     {
       "title": "Portfolio Page",
       "href": "https://lucataco.com",
-      "image": "/lucataco-avatar.jpg"
+      "image": "/lucataco-avatar.png"
     },
     {
       "title": "Catacolabs",
@@ -37,7 +37,7 @@
     {
       "title": "proHeadshot.pics",
       "href": "https://proheadshot.up.railway.app",
-      "image": "/headshotpics.jpg",
+      "image": "/headshotpics.png",
       "discontinued": true
     },
     {
@@ -49,13 +49,13 @@
     {
       "title": "YoungAgain.app",
       "href": "https://youngagain.vercel.app/",
-      "image": "/youngagain.jpg",
+      "image": "/youngagain.webp",
       "discontinued": true
     },
     {
       "title": "ReadingMoods",
       "href": "https://readingmoods.vercel.app",
-      "image": "/readingmoods.jpg",
+      "image": "/readingmoods.webp",
       "discontinued": true
     },
     {
@@ -67,13 +67,13 @@
     {
       "title": "profilepics.ai",
       "href": "https://profilepics.ai",
-      "image": "/headshotpics.jpg",
+      "image": "/headshotpics.png",
       "acquired": true
     },
     {
       "title": "Banana Templates",
       "href": "https://github.com/lucataco?tab=repositories&q=banana",
-      "image": "/banana.png",
+      "image": "/banana.avif",
       "discontinued": true
     },
     {

@@ -1,5 +1,6 @@
 import "../styles/globals.css";
 import type { Metadata } from "next";
+import Script from "next/script";
 import data from "../data.json";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
@@ -19,7 +20,7 @@ export const metadata: Metadata = {
     url: "/",
     siteName: data.name,
     images: [
-      { url: "/lucataco-avatar.jpg", width: 1200, height: 630, alt: data.name },
+      { url: "/lucataco-avatar.png", width: 1200, height: 630, alt: data.name },
     ],
     locale: "en_US",
     type: "profile",
@@ -28,7 +29,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: `${data.name} | Machine Learning Engineer & AI Developer`,
     description: `${data.name} - ${data.desc}. Links to Replicate models, GitHub projects, and AI/ML resources.`,
-    images: ["/lucataco-avatar.jpg"],
+    images: ["/lucataco-avatar.png"],
     creator: "@lucatac0",
   },
   alternates: {
@@ -62,7 +63,7 @@ const jsonLd = {
       name: data.name,
       description: data.desc,
       url: siteUrl,
-      image: `${siteUrl}/lucataco-avatar.jpg`,
+      image: `${siteUrl}/lucataco-avatar.png`,
       jobTitle: "Machine Learning Engineer",
       knowsAbout: ["Machine Learning", "Artificial Intelligence", "Replicate", "ML Models"],
       sameAs: data.socials.map((s: { href: string }) => s.href),
@@ -93,7 +94,11 @@ const Layout = ({ children }: LayoutProps) => {
       </head>
       <body>
         {children}
-        <script defer src="https://data.lucataco.dev/script.js" data-website-id="b13bd10a-0079-4345-a654-ad02cc54b3b7"></script>
+        <Script
+          src="https://data.lucataco.dev/script.js"
+          data-website-id="b13bd10a-0079-4345-a654-ad02cc54b3b7"
+          strategy="lazyOnload"
+        />
       </body>
     </html>
   );

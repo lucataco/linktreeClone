@@ -1,5 +1,3 @@
-'use client';
-
 import Image from "next/image";
 
 interface LinkCardProps {
@@ -19,25 +17,11 @@ export default function LinkCard({
   acquired,
   priority = false
 }: LinkCardProps) {
-  const handleClick = (e: React.MouseEvent) => {
-    // Prevent double-tap zoom on mobile
-    e.preventDefault();
-    window.open(href, '_blank', 'noopener,noreferrer');
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      window.open(href, '_blank', 'noopener,noreferrer');
-    }
-  };
-
   return (
-    <div
-      role="button"
-      tabIndex={0}
-      onClick={handleClick}
-      onKeyDown={handleKeyDown}
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
       aria-label={`Visit ${title}`}
       className="link-card relative flex items-center p-3 w-full rounded-xl bg-gray-100 mb-2 max-w-2xl cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent min-h-[64px]"
     >
@@ -73,6 +57,6 @@ export default function LinkCard({
           )}
         </div>
       )}
-    </div>
+    </a>
   );
 }

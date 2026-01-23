@@ -130,6 +130,7 @@ export default function HomePage() {
           width={96}
           height={96}
           priority
+          fetchPriority="high"
           sizes="(max-width: 640px) 80px, 96px"
           itemProp="image"
         />

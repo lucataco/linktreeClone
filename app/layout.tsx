@@ -2,6 +2,7 @@ import "../styles/globals.css";
 import type { Metadata } from "next";
 import Script from "next/script";
 import data from "../data.json";
+import WebMcp from "../components/WebMcp";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
@@ -94,6 +95,7 @@ const Layout = ({ children }: LayoutProps) => {
       </head>
       <body>
         {children}
+        <WebMcp />
         <Script
           src="https://data.lucataco.dev/script.js"
           data-website-id="b13bd10a-0079-4345-a654-ad02cc54b3b7"

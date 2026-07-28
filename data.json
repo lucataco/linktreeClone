@@ -4,6 +4,11 @@
   "avatar": "/lucataco-avatar.png",
   "links": [
     {
+      "title": "Schedule a Call",
+      "href": "https://cal.com/catacolabs",
+      "image": "/calendar.svg"
+    },
+    {
       "title": "Replicate Models",
       "href": "https://replicate.com/lucataco",
       "image": "/replicate.jpeg"

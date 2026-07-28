@@ -7,7 +7,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@types/react-dom": "18.0.10",
     "@vercel/analytics": "^1.0.0",
     "autoprefixer": "^10.4.13",
     "next": "^14.2.4",
@@ -19,7 +18,10 @@
   "devDependencies": {
     "@types/node": "20.4.4",
     "@types/react": "18.2.15",
+    "@types/react-dom": "18.0.10",
     "critters": "^0.0.22",
+    "eslint": "^8.57.1",
+    "eslint-config-next": "^14.2.35",
     "typescript": "5.1.6"
   },
   "browserslist": {

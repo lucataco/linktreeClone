@@ -17,12 +17,17 @@ export default function LinkCard({
   acquired,
   priority = false
 }: LinkCardProps) {
+  const status = discontinued
+    ? " (discontinued)"
+    : acquired
+      ? " (acquired)"
+      : "";
   return (
     <a
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      aria-label={`Visit ${title}`}
+      aria-label={`Visit ${title}${status}`}
       className="link-card relative flex items-center p-3 w-full rounded-xl bg-gray-100 mb-2 max-w-2xl cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent min-h-[64px]"
     >
       <div className="w-12 h-12 flex-shrink-0">
@@ -46,14 +51,14 @@ export default function LinkCard({
       {(discontinued || acquired) && (
         <div className="ml-auto flex-shrink-0 flex items-center z-10">
           {discontinued && (
-            <div className="bg-red-700 text-white text-sm rounded-full px-3 py-1 whitespace-nowrap shadow-sm">
+            <span aria-hidden="true" className="bg-red-700 text-white text-sm rounded-full px-3 py-1 whitespace-nowrap shadow-sm">
               Discontinued
-            </div>
+            </span>
           )}
           {acquired && (
-            <div className="bg-emerald-700 text-white text-sm rounded-full px-3 py-1 whitespace-nowrap shadow-sm">
+            <span aria-hidden="true" className="bg-emerald-700 text-white text-sm rounded-full px-3 py-1 whitespace-nowrap shadow-sm">
               Acquired
-            </div>
+            </span>
           )}
         </div>
       )}

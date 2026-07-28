@@ -1,10 +1,10 @@
 import "../styles/globals.css";
 import type { Metadata } from "next";
+import type { ReactNode } from "react";
 import Script from "next/script";
 import data from "../data.json";
 import WebMcp from "../components/WebMcp";
-
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+import { siteUrl } from "../lib/siteUrl";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -72,7 +72,7 @@ const jsonLd = {
   ],
 };
 
-type LayoutProps = { children: any };
+type LayoutProps = { children: ReactNode };
 
 const Layout = ({ children }: LayoutProps) => {
   return (
@@ -83,11 +83,6 @@ const Layout = ({ children }: LayoutProps) => {
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-        {/* Preload critical images */}
-        <link rel="preload" as="image" href={data.avatar} />
-        <link rel="preload" as="image" href={data.links[0]?.image} />
-        <link rel="preload" as="image" href={data.links[1]?.image} />
-        <link rel="preload" as="image" href={data.links[2]?.image} />
         {/* DNS prefetch for external domains */}
         <link rel="dns-prefetch" href="//data.lucataco.dev" />
         <link rel="preconnect" href="https://replicate.com" />

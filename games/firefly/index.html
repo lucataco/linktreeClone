@@ -227,7 +227,11 @@
       this.baseY = this.y;
       this.angle = Math.random() * Math.PI * 2;
       this.speed = 0.4 + Math.random() * 0.5;
-      this.radius = 2.2 + Math.random() * 1.6;
+      // depth: 0 = far/hazy/small, 1 = near/crisp/large — gives the swarm
+      // actual parallax dimension instead of every firefly reading as the
+      // same flat plane.
+      this.depth = Math.random();
+      this.radius = 1.6 + this.depth * 2.4;
       this.blinkPhase = Math.random() * Math.PI * 2;
       this.blinkSpeed = 0.03 + Math.random() * 0.03;
       this.turnTimer = Math.random() * 120;
@@ -262,20 +266,37 @@
     draw() {
       if (this.caught) return;
       const g = this.glow();
+      // near fireflies (higher depth) glow brighter/crisper; far ones are
+      // softer and dimmer, like they're behind a thin haze — real depth-of-
+      // field separation rather than uniform sharpness everywhere.
+      const depthDim = 0.55 + this.depth * 0.45;
       const r = this.radius * (1 + g*0.6);
-      const grad = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, r*7);
-      grad.addColorStop(0, `rgba(255, 245, 190, ${0.85*g})`);
-      grad.addColorStop(0.3, `rgba(255, 225, 140, ${0.35*g})`);
+      const glowSpread = r * (6 + (1 - this.depth) * 3);
+
+      const grad = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, glowSpread);
+      grad.addColorStop(0, `rgba(255, 245, 190, ${0.85*g*depthDim})`);
+      grad.addColorStop(0.3, `rgba(255, 225, 140, ${0.35*g*depthDim})`);
       grad.addColorStop(1, 'rgba(255, 225, 140, 0)');
       ctx.fillStyle = grad;
       ctx.beginPath();
-      ctx.arc(this.x, this.y, r*7, 0, Math.PI*2);
+      ctx.arc(this.x, this.y, glowSpread, 0, Math.PI*2);
       ctx.fill();
 
-      ctx.fillStyle = `rgba(255, 250, 220, ${0.9*g + 0.1})`;
+      // core body
+      ctx.fillStyle = `rgba(255, 250, 220, ${(0.9*g + 0.1) * depthDim})`;
       ctx.beginPath();
       ctx.arc(this.x, this.y, r, 0, Math.PI*2);
       ctx.fill();
+
+      // tiny hot specular highlight off-center — gives the glow body a
+      // dimensional "orb" read instead of a flat blob, especially on the
+      // larger near-plane fireflies
+      if (this.depth > 0.4) {
+        ctx.fillStyle = `rgba(255, 255, 255, ${0.6 * g * depthDim})`;
+        ctx.beginPath();
+        ctx.arc(this.x - r*0.3, this.y - r*0.3, r*0.35, 0, Math.PI*2);
+        ctx.fill();
+      }
     }
   }
 
@@ -348,6 +369,17 @@
     ctx.fillStyle = grad;
     ctx.fillRect(0, 0, W, H);
 
+    // Radial vignette "spotlight" glow centered on the moon — the single most
+    // characteristic Orisinal depth cue: soft warm light pooling from one
+    // source rather than flat ambient color everywhere.
+    const moonX = W * 0.82, moonY = H * 0.18;
+    const vignette = ctx.createRadialGradient(moonX, moonY, 0, moonX, moonY, W * 0.75);
+    vignette.addColorStop(0, `rgba(255, 235, 200, ${0.22 - progress * 0.10})`);
+    vignette.addColorStop(0.4, `rgba(255, 220, 180, ${0.10 - progress * 0.05})`);
+    vignette.addColorStop(1, 'rgba(255, 220, 180, 0)');
+    ctx.fillStyle = vignette;
+    ctx.fillRect(0, 0, W, H);
+
     // stars fade in as it darkens
     if (progress > 0.15) {
       const starAlpha = Math.min(1, (progress - 0.15) / 0.5);
@@ -364,14 +396,47 @@
       ctx.globalAlpha = 1;
     }
 
-    // soft moon
-    ctx.fillStyle = `rgba(255,250,235,${0.5 + 0.4*progress})`;
+    // moon: soft glow halo + airbrushed body with a subtle terminator shading
+    // (flat light side, slightly cooler/darker limb) instead of a flat disc
+    const moonGlow = ctx.createRadialGradient(moonX, moonY, 0, moonX, moonY, 90);
+    moonGlow.addColorStop(0, `rgba(255,250,235,${0.35 + 0.25*progress})`);
+    moonGlow.addColorStop(1, 'rgba(255,250,235,0)');
+    ctx.fillStyle = moonGlow;
     ctx.beginPath();
-    ctx.arc(W*0.82, H*0.18, 34, 0, Math.PI*2);
+    ctx.arc(moonX, moonY, 90, 0, Math.PI*2);
     ctx.fill();
 
-    // ground silhouette (rolling hill)
+    const moonBody = ctx.createRadialGradient(moonX - 10, moonY - 10, 2, moonX, moonY, 36);
+    moonBody.addColorStop(0, `rgba(255,255,248,${0.95})`);
+    moonBody.addColorStop(0.7, `rgba(255,248,225,${0.75 + 0.2*progress})`);
+    moonBody.addColorStop(1, `rgba(230,215,190,${0.55 + 0.2*progress})`);
+    ctx.fillStyle = moonBody;
+    ctx.beginPath();
+    ctx.arc(moonX, moonY, 34, 0, Math.PI*2);
+    ctx.fill();
+
+    // ---- layered hills for atmospheric depth: far hill (soft/blurred, cooler,
+    // desaturated) -> near hill (sharper, darker, warmer-lit rim) ----
     const groundY = H * 0.86;
+
+    // far hill layer (hazier, lighter, sits higher/further back)
+    ctx.save();
+    ctx.globalAlpha = 0.55;
+    ctx.fillStyle = `rgba(${lerp(70,20,progress)}, ${lerp(65,20,progress)}, ${lerp(75,30,progress)}, 1)`;
+    ctx.beginPath();
+    ctx.moveTo(0, H);
+    ctx.lineTo(0, groundY - 18);
+    for (let x = 0; x <= W; x += 40) {
+      const y = groundY - 18 + Math.sin(x*0.003 + 4) * 10;
+      ctx.lineTo(x, y);
+    }
+    ctx.lineTo(W, H);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+
+    // near hill (foreground, sharper contrast, subtle rim-light where the
+    // moon-side edge catches light)
     ctx.fillStyle = `rgba(${lerp(30,5,progress)}, ${lerp(35,8,progress)}, ${lerp(28,14,progress)}, 1)`;
     ctx.beginPath();
     ctx.moveTo(0, H);
@@ -384,7 +449,22 @@
     ctx.closePath();
     ctx.fill();
 
-    // tree silhouettes
+    // rim-light along the near hill's silhouette edge, brightest on the
+    // moon-facing side — this is what gives Orisinal scenes their
+    // "backlit by a single warm source" look instead of flat silhouettes
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(0, groundY + 20);
+    for (let x = 0; x <= W; x += 40) {
+      const y = groundY + Math.sin(x*0.004 + 1) * 14;
+      ctx.lineTo(x, y);
+    }
+    ctx.strokeStyle = `rgba(255, 225, 180, ${0.35 - progress * 0.18})`;
+    ctx.lineWidth = 3;
+    ctx.stroke();
+    ctx.restore();
+
+    // tree silhouettes with soft rim-light on the moon-facing side
     ctx.fillStyle = `rgba(${lerp(20,3,progress)}, ${lerp(22,6,progress)}, ${lerp(18,10,progress)}, 1)`;
     trees.forEach(t => {
       ctx.beginPath();
@@ -394,13 +474,41 @@
       ctx.quadraticCurveTo(t.x + t.w*0.6, groundY - t.h*0.6, t.x + t.w/2, groundY - t.h*0.15);
       ctx.closePath();
       ctx.fill();
+
+      // thin warm rim stroke on the canopy's upper-right curve (moon side)
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(t.x, groundY - t.h);
+      ctx.quadraticCurveTo(t.x + t.w*0.6, groundY - t.h*0.6, t.x + t.w/2, groundY - t.h*0.15);
+      ctx.strokeStyle = `rgba(255, 230, 190, ${0.25 - progress*0.12})`;
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      ctx.restore();
     });
+
+    // subtle ground haze/fog band right at the hill line for depth separation
+    const fog = ctx.createLinearGradient(0, groundY - 30, 0, groundY + 30);
+    fog.addColorStop(0, 'rgba(255,255,255,0)');
+    fog.addColorStop(0.5, `rgba(220,210,220,${0.08 - progress*0.04})`);
+    fog.addColorStop(1, 'rgba(255,255,255,0)');
+    ctx.fillStyle = fog;
+    ctx.fillRect(0, groundY - 30, W, 60);
   }
 
   function drawJar(x, y, fillRatio, scoopFlash) {
     const jw = 46, jh = 60;
     ctx.save();
     ctx.translate(x, y);
+
+    // soft contact shadow beneath the jar — gives it weight/grounding instead
+    // of floating flatly on the scene; a signature Orisinal depth cue
+    const shadowGrad = ctx.createRadialGradient(0, jh/2 + 6, 0, 0, jh/2 + 6, jw*0.6);
+    shadowGrad.addColorStop(0, 'rgba(10, 8, 15, 0.28)');
+    shadowGrad.addColorStop(1, 'rgba(10, 8, 15, 0)');
+    ctx.fillStyle = shadowGrad;
+    ctx.beginPath();
+    ctx.ellipse(0, jh/2 + 6, jw*0.55, jw*0.18, 0, 0, Math.PI*2);
+    ctx.fill();
 
     // glow behind jar from caught fireflies
     if (fillRatio > 0) {
@@ -414,10 +522,16 @@
       ctx.fill();
     }
 
-    // jar body (glass, soft translucent)
+    // jar body: airbrushed glass with directional shading — darker/cooler on
+    // the left (shadow side), lighter/warmer on the right (moon-lit side) —
+    // instead of a single flat translucent fill
+    const bodyGrad = ctx.createLinearGradient(-jw/2, 0, jw/2, 0);
+    bodyGrad.addColorStop(0, scoopFlash ? 'rgba(255,255,255,0.22)' : 'rgba(220,220,240,0.10)');
+    bodyGrad.addColorStop(0.5, scoopFlash ? 'rgba(255,255,255,0.30)' : 'rgba(255,255,255,0.14)');
+    bodyGrad.addColorStop(1, scoopFlash ? 'rgba(255,245,220,0.30)' : 'rgba(255,240,210,0.16)');
     ctx.strokeStyle = 'rgba(255,255,255,0.55)';
     ctx.lineWidth = 2;
-    ctx.fillStyle = scoopFlash ? 'rgba(255,255,255,0.28)' : 'rgba(255,255,255,0.12)';
+    ctx.fillStyle = bodyGrad;
     ctx.beginPath();
     ctx.moveTo(-jw/2, -jh/2 + 10);
     ctx.quadraticCurveTo(-jw/2, jh/2, 0, jh/2 + 4);
@@ -426,8 +540,28 @@
     ctx.fill();
     ctx.stroke();
 
-    // jar lid
-    ctx.fillStyle = 'rgba(210,180,140,0.85)';
+    // glass specular highlight streak — a bright vertical sheen offset to the
+    // upper-left, the classic "glass jar catching light" render trick
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(-jw/2, -jh/2 + 10);
+    ctx.quadraticCurveTo(-jw/2, jh/2, 0, jh/2 + 4);
+    ctx.quadraticCurveTo(jw/2, jh/2, jw/2, -jh/2 + 10);
+    ctx.closePath();
+    ctx.clip();
+    const sheen = ctx.createLinearGradient(-jw*0.32, -jh/2, -jw*0.12, jh/2);
+    sheen.addColorStop(0, 'rgba(255,255,255,0)');
+    sheen.addColorStop(0.5, 'rgba(255,255,255,0.35)');
+    sheen.addColorStop(1, 'rgba(255,255,255,0)');
+    ctx.fillStyle = sheen;
+    ctx.fillRect(-jw*0.4, -jh/2, jw*0.28, jh);
+    ctx.restore();
+
+    // jar lid: airbrushed metal/wood shading instead of flat fill
+    const lidGrad = ctx.createLinearGradient(0, -jh/2 - 12, 0, -jh/2 + 2);
+    lidGrad.addColorStop(0, 'rgba(225,198,160,0.9)');
+    lidGrad.addColorStop(1, 'rgba(190,158,120,0.85)');
+    ctx.fillStyle = lidGrad;
     ctx.strokeStyle = 'rgba(255,255,255,0.4)';
     ctx.beginPath();
     ctx.roundRect(-jw/2 - 3, -jh/2 - 12, jw + 6, 14, 4);
@@ -441,6 +575,15 @@
       const gx = Math.sin(elapsed*1.3 + gph) * (jw*0.28);
       const gy = Math.sin(elapsed*0.9 + gph*1.7) * (jh*0.25) + 2;
       const b = 0.4 + 0.6*Math.abs(Math.sin(elapsed*2 + gph*3));
+      // small halo behind each interior glow point for volumetric feel
+      const haloGrad = ctx.createRadialGradient(gx, gy, 0, gx, gy, 7);
+      haloGrad.addColorStop(0, `rgba(255,235,170,${b*0.5})`);
+      haloGrad.addColorStop(1, 'rgba(255,235,170,0)');
+      ctx.fillStyle = haloGrad;
+      ctx.beginPath();
+      ctx.arc(gx, gy, 7, 0, Math.PI*2);
+      ctx.fill();
+
       ctx.fillStyle = `rgba(255,240,180,${b})`;
       ctx.beginPath();
       ctx.arc(gx, gy, 2.2, 0, Math.PI*2);

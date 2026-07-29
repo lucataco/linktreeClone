@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Firefly Jar</title>
+<style>
+  html, body {
+    margin: 0; padding: 0; overflow: hidden;
+    background: #1a1330;
+    font-family: 'Georgia', 'Palatino Linotype', serif;
+    cursor: none;
+  }
+  canvas { display: block; }
+  #overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column;
+    color: #fff7e6;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    pointer-events: none;
+    text-align: center;
+  }
+  #title {
+    font-size: 52px; letter-spacing: 6px; font-weight: normal;
+    margin-bottom: 6px;
+  }
+  #subtitle {
+    font-size: 16px; letter-spacing: 2px; opacity: 0.85; margin-bottom: 30px;
+  }
+  #startBtn, #retryBtn {
+    pointer-events: all;
+    cursor: pointer;
+    background: rgba(255,247,230,0.15);
+    border: 1px solid rgba(255,247,230,0.6);
+    color: #fff7e6;
+    padding: 12px 34px;
+    border-radius: 30px;
+    font-size: 16px;
+    letter-spacing: 2px;
+    transition: background 0.2s ease;
+  }
+  #startBtn:hover, #retryBtn:hover { background: rgba(255,247,230,0.3); }
+  #hud {
+    position: fixed; top: 22px; left: 0; width: 100%;
+    display: flex; justify-content: space-between; padding: 0 30px;
+    box-sizing: border-box;
+    color: #fff7e6; font-size: 20px; letter-spacing: 1px;
+    text-shadow: 0 2px 6px rgba(0,0,0,0.5);
+    pointer-events: none;
+  }
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+<canvas id="game"></canvas>
+
+<div id="hud" class="hidden">
+  <div id="jarCount">Fireflies: 0</div>
+  <div id="timeLeft">Dusk: 90</div>
+</div>
+
+<div id="overlay">
+  <div id="title">firefly jar</div>
+  <div id="subtitle">move your jar through the dusk &middot; hold click to scoop the light before night falls</div>
+  <button id="startBtn">begin</button>
+</div>
+
+<script>
+(() => {
+  const canvas = document.getElementById('game');
+  const ctx = canvas.getContext('2d');
+  const overlay = document.getElementById('overlay');
+  const hud = document.getElementById('hud');
+  const jarCountEl = document.getElementById('jarCount');
+  const timeLeftEl = document.getElementById('timeLeft');
+  const startBtn = document.getElementById('startBtn');
+
+  let W, H;
+  function resize() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  // ---------- Audio (procedural, no external assets) ----------
+  let audioCtx = null;
+  let padGain = null;
+  function initAudio() {
+    if (audioCtx) return;
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+    // Ambient pad: two slow detuned triangle oscillators through a soft lowpass, gentle tremolo
+    padGain = audioCtx.createGain();
+    padGain.gain.value = 0.0;
+    padGain.connect(audioCtx.destination);
+
+    const filter = audioCtx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.value = 900;
+    filter.connect(padGain);
+
+    const notes = [220.0, 277.18, 329.63]; // A3, C#4, E4 - warm major triad
+    notes.forEach((freq, i) => {
+      const osc = audioCtx.createOscillator();
+      osc.type = 'triangle';
+      osc.frequency.value = freq;
+      const g = audioCtx.createGain();
+      g.gain.value = 0.22 / notes.length;
+      osc.connect(g);
+      g.connect(filter);
+      osc.start();
+
+      // slow drifting detune via LFO for gentle movement
+      const lfo = audioCtx.createOscillator();
+      lfo.type = 'sine';
+      lfo.frequency.value = 0.05 + i * 0.02;
+      const lfoGain = audioCtx.createGain();
+      lfoGain.gain.value = 3 + i;
+      lfo.connect(lfoGain);
+      lfoGain.connect(osc.detune);
+      lfo.start();
+    });
+
+    // fade pad in
+    padGain.gain.linearRampToValueAtTime(0.5, audioCtx.currentTime + 3);
+  }
+
+  function playChime(pitchOffset = 0) {
+    if (!audioCtx) return;
+    const base = 660 + pitchOffset;
+    const osc = audioCtx.createOscillator();
+    osc.type = 'sine';
+    osc.frequency.value = base;
+    const g = audioCtx.createGain();
+    g.gain.value = 0.0001;
+    osc.connect(g);
+    g.connect(audioCtx.destination);
+    const t = audioCtx.currentTime;
+    g.gain.exponentialRampToValueAtTime(0.18, t + 0.02);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + 1.1);
+    osc.start(t);
+    osc.stop(t + 1.2);
+
+    // soft octave harmonic
+    const osc2 = audioCtx.createOscillator();
+    osc2.type = 'sine';
+    osc2.frequency.value = base * 2;
+    const g2 = audioCtx.createGain();
+    g2.gain.value = 0.0001;
+    osc2.connect(g2);
+    g2.connect(audioCtx.destination);
+    g2.gain.exponentialRampToValueAtTime(0.06, t + 0.02);
+    g2.gain.exponentialRampToValueAtTime(0.0001, t + 0.7);
+    osc2.start(t);
+    osc2.stop(t + 0.8);
+  }
+
+  // ---------- Game state ----------
+  const GAME_LEN = 90; // seconds of "dusk"
+  let state = 'menu'; // menu | playing | over
+  let elapsed = 0;
+  let lastTime = 0;
+  let caught = 0;
+  let mouse = { x: W/2, y: H/2, down: false };
+  let jar = { x: W/2, y: H/2, ox: W/2, oy: H/2 }; // ox/oy = smoothed display pos
+
+  const NUM_TREES = 9;
+  let trees = [];
+  function makeTrees() {
+    trees = [];
+    for (let i = 0; i < NUM_TREES; i++) {
+      trees.push({
+        x: (i / (NUM_TREES-1)) * W + (Math.random()-0.5)*60,
+        h: H * (0.18 + Math.random()*0.16),
+        w: 40 + Math.random()*50
+      });
+    }
+  }
+  makeTrees();
+
+  class Firefly {
+    constructor() { this.reset(true); }
+    reset(initial) {
+      this.x = Math.random() * W;
+      this.y = H * 0.25 + Math.random() * H * 0.6;
+      this.baseY = this.y;
+      this.angle = Math.random() * Math.PI * 2;
+      this.speed = 0.4 + Math.random() * 0.5;
+      this.radius = 2.2 + Math.random() * 1.6;
+      this.blinkPhase = Math.random() * Math.PI * 2;
+      this.blinkSpeed = 0.03 + Math.random() * 0.03;
+      this.turnTimer = Math.random() * 120;
+      this.vx = (Math.random()-0.5) * 0.6;
+      this.vy = (Math.random()-0.5) * 0.3;
+      this.caught = false;
+      this.scale = 1;
+    }
+    update(diffFactor) {
+      if (this.caught) return;
+      this.turnTimer -= 1;
+      if (this.turnTimer <= 0) {
+        this.vx += (Math.random()-0.5) * 0.4;
+        this.vy += (Math.random()-0.5) * 0.25;
+        this.vx = Math.max(-1.3, Math.min(1.3, this.vx)) * diffFactor;
+        this.vy = Math.max(-0.7, Math.min(0.7, this.vy));
+        this.turnTimer = 60 + Math.random() * 90;
+      }
+      this.x += this.vx;
+      this.y += this.vy + Math.sin(this.blinkPhase * 0.3) * 0.15;
+      this.blinkPhase += this.blinkSpeed;
+
+      if (this.x < -20) this.x = W + 20;
+      if (this.x > W + 20) this.x = -20;
+      if (this.y < H*0.15) this.y = H*0.15;
+      if (this.y > H*0.92) this.y = H*0.92;
+    }
+    glow() {
+      // 0..1 blink brightness
+      return 0.35 + 0.65 * (0.5 + 0.5 * Math.sin(this.blinkPhase));
+    }
+    draw() {
+      if (this.caught) return;
+      const g = this.glow();
+      const r = this.radius * (1 + g*0.6);
+      const grad = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, r*7);
+      grad.addColorStop(0, `rgba(255, 245, 190, ${0.85*g})`);
+      grad.addColorStop(0.3, `rgba(255, 225, 140, ${0.35*g})`);
+      grad.addColorStop(1, 'rgba(255, 225, 140, 0)');
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, r*7, 0, Math.PI*2);
+      ctx.fill();
+
+      ctx.fillStyle = `rgba(255, 250, 220, ${0.9*g + 0.1})`;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, r, 0, Math.PI*2);
+      ctx.fill();
+    }
+  }
+
+  const NUM_FIREFLIES = 16;
+  let fireflies = [];
+  function makeFireflies() {
+    fireflies = [];
+    for (let i = 0; i < NUM_FIREFLIES; i++) fireflies.push(new Firefly());
+  }
+  makeFireflies();
+
+  // jar-inside glow particles (visual fill indicator)
+  let jarGlows = [];
+
+  function resetGame() {
+    elapsed = 0;
+    caught = 0;
+    jarGlows = [];
+    makeFireflies();
+    state = 'playing';
+    hud.classList.remove('hidden');
+    overlay.classList.add('hidden');
+  }
+
+  // ---------- Input ----------
+  window.addEventListener('mousemove', e => {
+    mouse.x = e.clientX; mouse.y = e.clientY;
+  });
+  window.addEventListener('mousedown', () => { mouse.down = true; });
+  window.addEventListener('mouseup', () => { mouse.down = false; });
+  window.addEventListener('touchmove', e => {
+    if (e.touches[0]) { mouse.x = e.touches[0].clientX; mouse.y = e.touches[0].clientY; }
+  }, {passive:true});
+  window.addEventListener('touchstart', e => {
+    mouse.down = true;
+    if (e.touches[0]) { mouse.x = e.touches[0].clientX; mouse.y = e.touches[0].clientY; }
+  }, {passive:true});
+  window.addEventListener('touchend', () => { mouse.down = false; });
+
+  startBtn.addEventListener('click', () => {
+    initAudio();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    resetGame();
+  });
+
+  // ---------- Drawing helpers ----------
+  function lerp(a, b, t) { return a + (b - a) * t; }
+
+  function skyColors(progress) {
+    // progress: 0 = full dusk pink/orange, 1 = deep night
+    const top = [
+      lerp(70, 12, progress), lerp(40, 8, progress), lerp(90, 40, progress)
+    ];
+    const mid = [
+      lerp(180, 40, progress), lerp(110, 25, progress), lerp(140, 70, progress)
+    ];
+    const horizon = [
+      lerp(255, 40, progress), lerp(170, 30, progress), lerp(140, 80, progress)
+    ];
+    return { top, mid, horizon };
+  }
+
+  function drawBackground(progress) {
+    const { top, mid, horizon } = skyColors(progress);
+    const grad = ctx.createLinearGradient(0, 0, 0, H);
+    grad.addColorStop(0, `rgb(${top.join(',')})`);
+    grad.addColorStop(0.55, `rgb(${mid.join(',')})`);
+    grad.addColorStop(1, `rgb(${horizon.join(',')})`);
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, W, H);
+
+    // stars fade in as it darkens
+    if (progress > 0.15) {
+      const starAlpha = Math.min(1, (progress - 0.15) / 0.5);
+      ctx.fillStyle = `rgba(255,255,255,${starAlpha})`;
+      for (let i = 0; i < 60; i++) {
+        const sx = (i * 197) % W;
+        const sy = (i * 53) % (H*0.5);
+        const tw = 0.5 + 0.5*Math.sin(i*12.9 + elapsed*0.5);
+        ctx.globalAlpha = starAlpha * tw;
+        ctx.beginPath();
+        ctx.arc(sx, sy, 1.2, 0, Math.PI*2);
+        ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+    }
+
+    // soft moon
+    ctx.fillStyle = `rgba(255,250,235,${0.5 + 0.4*progress})`;
+    ctx.beginPath();
+    ctx.arc(W*0.82, H*0.18, 34, 0, Math.PI*2);
+    ctx.fill();
+
+    // ground silhouette (rolling hill)
+    const groundY = H * 0.86;
+    ctx.fillStyle = `rgba(${lerp(30,5,progress)}, ${lerp(35,8,progress)}, ${lerp(28,14,progress)}, 1)`;
+    ctx.beginPath();
+    ctx.moveTo(0, H);
+    ctx.lineTo(0, groundY + 20);
+    for (let x = 0; x <= W; x += 40) {
+      const y = groundY + Math.sin(x*0.004 + 1) * 14;
+      ctx.lineTo(x, y);
+    }
+    ctx.lineTo(W, H);
+    ctx.closePath();
+    ctx.fill();
+
+    // tree silhouettes
+    ctx.fillStyle = `rgba(${lerp(20,3,progress)}, ${lerp(22,6,progress)}, ${lerp(18,10,progress)}, 1)`;
+    trees.forEach(t => {
+      ctx.beginPath();
+      ctx.moveTo(t.x, groundY + 10);
+      ctx.lineTo(t.x - t.w/2, groundY - t.h*0.15);
+      ctx.quadraticCurveTo(t.x - t.w*0.6, groundY - t.h*0.6, t.x, groundY - t.h);
+      ctx.quadraticCurveTo(t.x + t.w*0.6, groundY - t.h*0.6, t.x + t.w/2, groundY - t.h*0.15);
+      ctx.closePath();
+      ctx.fill();
+    });
+  }
+
+  function drawJar(x, y, fillRatio, scoopFlash) {
+    const jw = 46, jh = 60;
+    ctx.save();
+    ctx.translate(x, y);
+
+    // glow behind jar from caught fireflies
+    if (fillRatio > 0) {
+      const glowR = 30 + fillRatio * 40;
+      const grad = ctx.createRadialGradient(0, 10, 0, 0, 10, glowR);
+      grad.addColorStop(0, `rgba(255,235,170,${0.25 + fillRatio*0.35})`);
+      grad.addColorStop(1, 'rgba(255,235,170,0)');
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.arc(0, 10, glowR, 0, Math.PI*2);
+      ctx.fill();
+    }
+
+    // jar body (glass, soft translucent)
+    ctx.strokeStyle = 'rgba(255,255,255,0.55)';
+    ctx.lineWidth = 2;
+    ctx.fillStyle = scoopFlash ? 'rgba(255,255,255,0.28)' : 'rgba(255,255,255,0.12)';
+    ctx.beginPath();
+    ctx.moveTo(-jw/2, -jh/2 + 10);
+    ctx.quadraticCurveTo(-jw/2, jh/2, 0, jh/2 + 4);
+    ctx.quadraticCurveTo(jw/2, jh/2, jw/2, -jh/2 + 10);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // jar lid
+    ctx.fillStyle = 'rgba(210,180,140,0.85)';
+    ctx.strokeStyle = 'rgba(255,255,255,0.4)';
+    ctx.beginPath();
+    ctx.roundRect(-jw/2 - 3, -jh/2 - 12, jw + 6, 14, 4);
+    ctx.fill();
+    ctx.stroke();
+
+    // fireflies glowing inside, count = fillRatio-based sample
+    const innerCount = Math.min(jarGlows.length, 30);
+    for (let i = 0; i < innerCount; i++) {
+      const gph = jarGlows[i];
+      const gx = Math.sin(elapsed*1.3 + gph) * (jw*0.28);
+      const gy = Math.sin(elapsed*0.9 + gph*1.7) * (jh*0.25) + 2;
+      const b = 0.4 + 0.6*Math.abs(Math.sin(elapsed*2 + gph*3));
+      ctx.fillStyle = `rgba(255,240,180,${b})`;
+      ctx.beginPath();
+      ctx.arc(gx, gy, 2.2, 0, Math.PI*2);
+      ctx.fill();
+    }
+
+    ctx.restore();
+  }
+
+  // ---------- Main loop ----------
+  let scoopCooldown = 0;
+  function frame(ts) {
+    if (!lastTime) lastTime = ts;
+    const dt = (ts - lastTime) / 1000;
+    lastTime = ts;
+
+    if (state === 'playing') {
+      elapsed += dt;
+      const progress = Math.min(1, elapsed / GAME_LEN);
+      const diffFactor = 1 + progress * 0.8;
+
+      // smooth jar follow
+      jar.ox = lerp(jar.ox, mouse.x, 0.18);
+      jar.oy = lerp(jar.oy, mouse.y, 0.18);
+
+      fireflies.forEach(f => f.update(diffFactor));
+
+      // scoop check
+      if (mouse.down && scoopCooldown <= 0) {
+        let gotOne = false;
+        for (const f of fireflies) {
+          if (f.caught) continue;
+          const dx = f.x - jar.ox, dy = f.y - (jar.oy + 6);
+          if (Math.sqrt(dx*dx + dy*dy) < 34) {
+            f.caught = true;
+            caught++;
+            jarGlows.push(Math.random()*100);
+            playChime((Math.random()-0.5) * 60);
+            gotOne = true;
+            setTimeout(() => { f.reset(); }, 3000 + Math.random()*2000);
+            break;
+          }
+        }
+        if (gotOne) scoopCooldown = 8;
+      }
+      if (scoopCooldown > 0) scoopCooldown--;
+
+      jarCountEl.textContent = `Fireflies: ${caught}`;
+      const secLeft = Math.max(0, Math.ceil(GAME_LEN - elapsed));
+      timeLeftEl.textContent = `Dusk: ${secLeft}`;
+
+      drawBackground(progress);
+      fireflies.forEach(f => f.draw());
+      drawJar(jar.ox, jar.oy, Math.min(1, caught/30), mouse.down && scoopCooldown > 6);
+
+      if (elapsed >= GAME_LEN) {
+        endGame();
+      }
+    } else if (state === 'menu') {
+      drawBackground(0.05);
+      fireflies.forEach(f => { f.update(1); f.draw(); });
+    } else if (state === 'over') {
+      drawBackground(1);
+      fireflies.forEach(f => f.draw());
+      drawJar(jar.ox, jar.oy, Math.min(1, caught/30), false);
+    }
+
+    requestAnimationFrame(frame);
+  }
+
+  function endGame() {
+    state = 'over';
+    hud.classList.add('hidden');
+    overlay.classList.remove('hidden');
+    document.getElementById('title').textContent = 'night has fallen';
+    document.getElementById('subtitle').textContent = `you gathered ${caught} firefl${caught === 1 ? 'y' : 'ies'} of light`;
+    startBtn.textContent = 'gather again';
+    if (padGain) padGain.gain.linearRampToValueAtTime(0.15, audioCtx.currentTime + 2);
+  }
+
+  startBtn.addEventListener('click', () => {
+    if (state === 'over') {
+      if (padGain) padGain.gain.linearRampToValueAtTime(0.5, audioCtx.currentTime + 2);
+      document.getElementById('title').textContent = 'firefly jar';
+      document.getElementById('subtitle').textContent = 'move your jar through the dusk · hold click to scoop the light before night falls';
+      startBtn.textContent = 'begin';
+    }
+  });
+
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

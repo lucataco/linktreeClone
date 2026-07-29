@@ -474,7 +474,7 @@
         for (const f of fireflies) {
           if (f.caught) continue;
           const dx = f.x - jar.ox, dy = f.y - (jar.oy + 6);
-          if (Math.sqrt(dx*dx + dy*dy) < 34) {
+          if (Math.sqrt(dx*dx + dy*dy) < 40) {
             f.caught = true;
             caught++;
             jarGlows.push(Math.random()*100);

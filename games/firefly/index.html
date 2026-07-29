@@ -84,17 +84,43 @@
   window.addEventListener('resize', resize);
   resize();
 
-  // ---------- Audio (procedural, no external assets) ----------
+  // ---------- Audio ----------
+  // Ambient bed: real generated piano loop (assets/ambient.mp3) with a silent
+  // procedural-pad fallback if the file fails to load (e.g. offline/blocked).
   let audioCtx = null;
   let padGain = null;
+  let ambientEl = null;
+  let usingProceduralPad = false;
+
   function initAudio() {
     if (audioCtx) return;
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-    // Ambient pad: two slow detuned triangle oscillators through a soft lowpass, gentle tremolo
     padGain = audioCtx.createGain();
     padGain.gain.value = 0.0;
     padGain.connect(audioCtx.destination);
+
+    ambientEl = new Audio('assets/ambient.mp3');
+    ambientEl.loop = true;
+    ambientEl.volume = 0;
+    ambientEl.crossOrigin = 'anonymous';
+    ambientEl.addEventListener('error', startProceduralPad);
+    ambientEl.play().then(() => {
+      // fade real track in
+      let v = 0;
+      const target = 0.55;
+      const step = () => {
+        v = Math.min(target, v + 0.01);
+        ambientEl.volume = v;
+        if (v < target) requestAnimationFrame(step);
+      };
+      step();
+    }).catch(startProceduralPad);
+  }
+
+  function startProceduralPad() {
+    if (usingProceduralPad) return;
+    usingProceduralPad = true;
 
     const filter = audioCtx.createBiquadFilter();
     filter.type = 'lowpass';
@@ -112,7 +138,6 @@
       g.connect(filter);
       osc.start();
 
-      // slow drifting detune via LFO for gentle movement
       const lfo = audioCtx.createOscillator();
       lfo.type = 'sine';
       lfo.frequency.value = 0.05 + i * 0.02;
@@ -123,8 +148,22 @@
       lfo.start();
     });
 
-    // fade pad in
     padGain.gain.linearRampToValueAtTime(0.5, audioCtx.currentTime + 3);
+  }
+
+  function fadeAmbient(target) {
+    if (ambientEl) {
+      const start = ambientEl.volume;
+      const t0 = performance.now();
+      const dur = 1500;
+      function step(now) {
+        const p = Math.min(1, (now - t0) / dur);
+        ambientEl.volume = start + (target - start) * p;
+        if (p < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    }
+    if (padGain) padGain.gain.linearRampToValueAtTime(target * 0.9, audioCtx.currentTime + 1.5);
   }
 
   function playChime(pitchOffset = 0) {
@@ -480,12 +519,12 @@
     document.getElementById('title').textContent = 'night has fallen';
     document.getElementById('subtitle').textContent = `you gathered ${caught} firefl${caught === 1 ? 'y' : 'ies'} of light`;
     startBtn.textContent = 'gather again';
-    if (padGain) padGain.gain.linearRampToValueAtTime(0.15, audioCtx.currentTime + 2);
+    fadeAmbient(0.2);
   }
 
   startBtn.addEventListener('click', () => {
     if (state === 'over') {
-      if (padGain) padGain.gain.linearRampToValueAtTime(0.5, audioCtx.currentTime + 2);
+      fadeAmbient(0.55);
       document.getElementById('title').textContent = 'firefly jar';
       document.getElementById('subtitle').textContent = 'move your jar through the dusk · hold click to scoop the light before night falls';
       startBtn.textContent = 'begin';

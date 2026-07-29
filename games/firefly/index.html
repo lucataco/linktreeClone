@@ -8,9 +8,10 @@
     margin: 0; padding: 0; overflow: hidden;
     background: #1a1330;
     font-family: 'Georgia', 'Palatino Linotype', serif;
-    cursor: none;
   }
   canvas { display: block; }
+  body.playing { cursor: none; }
+  body.playing #overlay button { cursor: pointer; }
   #overlay {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     display: flex; align-items: center; justify-content: center;
@@ -258,6 +259,7 @@
     state = 'playing';
     hud.classList.remove('hidden');
     overlay.classList.add('hidden');
+    document.body.classList.add('playing');
   }
 
   // ---------- Input ----------
@@ -474,6 +476,7 @@
     state = 'over';
     hud.classList.add('hidden');
     overlay.classList.remove('hidden');
+    document.body.classList.remove('playing');
     document.getElementById('title').textContent = 'night has fallen';
     document.getElementById('subtitle').textContent = `you gathered ${caught} firefl${caught === 1 ? 'y' : 'ies'} of light`;
     startBtn.textContent = 'gather again';
